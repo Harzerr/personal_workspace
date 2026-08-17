@@ -1,0 +1,10 @@
+personal_workspace
+
+This repository contains a customized derivative of AI Agent Station Study
+v2.2 by fuzhengwei (xiaofuge). The upstream project metadata declares the
+Apache License, Version 2.0. The upstream relationship and required dependency
+attribution are documented in THIRD_PARTY.md.
+
+The Personal AI Workspace additions include project-aware chunking and
+retrieval, workspace memory, diff risk checks, PostgreSQL migration support,
+deployment tuning, and the customized static frontend distribution.

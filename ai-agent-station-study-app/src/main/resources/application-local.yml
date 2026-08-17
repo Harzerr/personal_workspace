@@ -1,0 +1,57 @@
+server:
+  port: ${WORKSPACE_SERVER_PORT:8099}
+  address: ${WORKSPACE_SERVER_ADDRESS:127.0.0.1}
+
+thread:
+  pool:
+    executor:
+      config:
+        core-pool-size: 2
+        max-pool-size: 4
+        keep-alive-time: 5000
+        block-queue-size: 200
+        policy: CallerRunsPolicy
+
+spring:
+  datasource:
+    postgresql:
+      username: ${WORKSPACE_POSTGRES_USERNAME}
+      password: ${WORKSPACE_POSTGRES_PASSWORD}
+      url: ${WORKSPACE_POSTGRES_URL}
+      driver-class-name: org.postgresql.Driver
+      type: com.zaxxer.hikari.HikariDataSource
+      hikari:
+        pool-name: WorkspacePostgreSQL
+        minimum-idle: 1
+        maximum-pool-size: 4
+        idle-timeout: 60000
+        max-lifetime: 1800000
+        connection-timeout: 10000
+  data:
+    redis:
+      host: ${WORKSPACE_REDIS_HOST:127.0.0.1}
+      port: ${WORKSPACE_REDIS_PORT:6379}
+      timeout: 3s
+  ai:
+    openai:
+      base-url: ${WORKSPACE_OPENAI_BASE_URL:https://api.openai.com}
+      api-key: ${WORKSPACE_OPENAI_API_KEY}
+    agent:
+      auto-config:
+        enabled: true
+
+workspace:
+  task:
+    job:
+      enabled: true
+      pool-size: 2
+      thread-name-prefix: workspace-task-
+      wait-for-tasks-to-complete-on-shutdown: true
+      await-termination-seconds: 20
+      refresh-interval: 30000
+      clean-invalid-tasks-cron: "0 0/5 * * * ?"
+
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
