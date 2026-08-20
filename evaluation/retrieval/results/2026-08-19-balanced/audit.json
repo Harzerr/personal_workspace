@@ -1,0 +1,643 @@
+{
+  "questionCount": 120,
+  "validCount": 106,
+  "validRate": 0.8833333333333333,
+  "testCount": 80,
+  "testValidCount": 70,
+  "testValidRate": 0.875,
+  "issueCounts": {
+    "generic_knowledge": 1,
+    "incomplete_quote": 11,
+    "unsupported_answer": 2
+  },
+  "items": [
+    {
+      "id": "Q018C5733C6",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q04C3F1EB78",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q054F14B410",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q09E8A0C995",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q0CF1F37B1E",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q0D1A46B62F",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q0EBF7FE7E0",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q0F7126EF79",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q1255728526",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q141F30F6C4",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q156ED5FEEA",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q1840E08D5C",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q18AA11E4D8",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q1FC26FF6AC",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q231022E6EA",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q24E3D216A1",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q272AFDADA0",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q2943260B47",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q2B835776D2",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q2E04427952",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q2E7D351FB3",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q3186315554",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q36B911A7C0",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q3BC1DA276D",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q3C0E126696",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q3C7FD3BC18",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q3CFEB5EC91",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q3E24BBF7CA",
+      "valid": false,
+      "issues": [
+        "unsupported_answer"
+      ]
+    },
+    {
+      "id": "Q3F8CB547BD",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q40AB8B5FD8",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q448292414A",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q4697ED151D",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q47272B835C",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q4809A2D59F",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q4B7171F540",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q4C3DEFA95B",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q4E25D8D7DF",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q50F58F0C73",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q511D437006",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q513C70C416",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q5159CC7EE0",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q59F49156B3",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q5B1388D027",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q5BA96C699F",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q5D1E003403",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q60A7D2ED47",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q6279263470",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q63222BA368",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q6796ED90A3",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q6A3BCED943",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q6BF82FA330",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q70393EC919",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q7212E254F3",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q73548C75DE",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q79057AD573",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q791B473D79",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q7A46E74EDC",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q7A7C7BFD3A",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q7B5AB34BE6",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q7C45EA8CE4",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q7D887FA989",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q7E6606AFC0",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q7F6EBE5BA3",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q86007DCB54",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q889616B337",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q8AB639FDE9",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q8B0E95774A",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q8B75C5D5D3",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q8C417D058B",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q8D09E9AB35",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q8DB4DBB6A7",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "Q9046F53AFF",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q9125D4AF24",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q92EAFEB807",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q9322FFCB5D",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q93F4834413",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q98604615DE",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q99E7CCDA38",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q9B4C4E24DE",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "Q9D98154817",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "QA1E72CAC63",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QA37D61FF53",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QA922800E6B",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QA9A03566FB",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QADA971F441",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QAFE1F5615D",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QB16B57736A",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QB5206EB0DA",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QBC1AE00CEA",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QBDF287947F",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QC047182C70",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QC62F844A28",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QCA805F0DDE",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QCC7C168EB7",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QD1026AE66F",
+      "valid": false,
+      "issues": [
+        "generic_knowledge"
+      ]
+    },
+    {
+      "id": "QD372388797",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QD4DDA2889B",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QD8BF8B874E",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QDA2FCC2DFF",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QDC7EA0391D",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "QDD500E4DF0",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QE02C1DBCA4",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QE108B20509",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QE1C62633CE",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QE26B5461F9",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QE53C28E003",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QE72A7D5797",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QE7347FAE55",
+      "valid": false,
+      "issues": [
+        "incomplete_quote"
+      ]
+    },
+    {
+      "id": "QEBA82E4A1C",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QEC5C3219D3",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QECC2BE8401",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QF3E4BE4F19",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QF5F9617975",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QF6F8EE9608",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QF70092F0CE",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QF7F9ACA910",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QF99D019F2A",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QFA1ADF2369",
+      "valid": true,
+      "issues": []
+    },
+    {
+      "id": "QFAEFB3B1A1",
+      "valid": false,
+      "issues": [
+        "unsupported_answer"
+      ]
+    },
+    {
+      "id": "QFFDF017D85",
+      "valid": true,
+      "issues": []
+    }
+  ]
+}

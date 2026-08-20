@@ -1,25 +1,24 @@
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:17-jre-alpine
 
 LABEL org.opencontainers.image.title="personal_workspace"
 
 ENV PARAMS=""
 ENV TZ=Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV WORKSPACE_SERVER_ADDRESS=0.0.0.0
+ENV WORKSPACE_BLOG_STORAGE_DIR=/app/data/blog
+ENV JAVA_OPTS="-XX:+UseSerialGC -XX:InitialRAMPercentage=20 -XX:MaxRAMPercentage=65 -XX:MaxMetaspaceSize=192m -XX:+ExitOnOutOfMemoryError"
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        curl \
-        ca-certificates \
-        gnupg && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    npm install -g npm@latest && \
-    apt-get purge -y --auto-remove curl gnupg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+WORKDIR /app
 
-RUN node -v && npm -v
+RUN addgroup -S workspace && \
+    adduser -S workspace -G workspace && \
+    mkdir -p /app/data/blog && \
+    chown -R workspace:workspace /app
 
-COPY target/ai-agent-station-study-app.jar /ai-agent-station-study-app.jar
+COPY --chown=workspace:workspace target/ai-agent-station-study-app.jar /app/app.jar
 
-ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /ai-agent-station-study-app.jar $PARAMS"]
+USER workspace
+VOLUME ["/app/data"]
+EXPOSE 8099
+
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar $PARAMS"]

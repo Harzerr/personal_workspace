@@ -39,8 +39,14 @@ public class AiClientApiLoadDataStrategy implements ILoadDataStrategy {
             return repository.queryAiClientApiVOListByApiIds(apiIdList);
         }, threadPoolExecutor);
 
-        CompletableFuture.allOf(aiClientApiListFuture).thenRun(() -> {
+        CompletableFuture<List<AiClientModelVO>> aiClientModelListFuture = CompletableFuture.supplyAsync(() -> {
+            log.info("查询API关联模型配置(ai_client_model) {}", apiIdList);
+            return repository.queryAiClientModelVOListByApiIds(apiIdList);
+        }, threadPoolExecutor);
+
+        CompletableFuture.allOf(aiClientApiListFuture, aiClientModelListFuture).thenRun(() -> {
             dynamicContext.setValue(AiAgentEnumVO.AI_CLIENT_API.getDataName(), aiClientApiListFuture.join());
+            dynamicContext.setValue(AiAgentEnumVO.AI_CLIENT_MODEL.getDataName(), aiClientModelListFuture.join());
         }).join();
     }
 

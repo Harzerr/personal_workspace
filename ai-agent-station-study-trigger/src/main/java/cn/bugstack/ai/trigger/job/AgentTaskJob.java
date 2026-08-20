@@ -6,6 +6,7 @@ import cn.bugstack.ai.domain.agent.service.IAgentDispatchService;
 import cn.bugstack.ai.domain.agent.service.ITaskService;
 import cn.bugstack.ai.types.job.model.TaskScheduleVO;
 import cn.bugstack.ai.types.job.provider.ITaskDataProvider;
+import cn.bugstack.ai.trigger.http.workspace.WorkspaceAiNewsAutomationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -30,11 +31,17 @@ public class AgentTaskJob implements ITaskDataProvider {
     @Resource
     private IAgentDispatchService dispatchService;
 
+    @Resource
+    private WorkspaceAiNewsAutomationService aiNewsAutomationService;
+
     @Override
     public List<TaskScheduleVO> queryAllValidTaskSchedule() {
         List<AiAgentTaskScheduleVO> aiAgentTaskScheduleVOS = taskService.queryAllValidTaskSchedule();
         List<TaskScheduleVO> result = new ArrayList<>();
         for (AiAgentTaskScheduleVO aiAgentTaskScheduleVO : aiAgentTaskScheduleVOS) {
+            if (aiNewsAutomationService.isAutomationTask(aiAgentTaskScheduleVO.getTaskParam())) {
+                continue;
+            }
             TaskScheduleVO taskScheduleVO = new TaskScheduleVO();
             taskScheduleVO.setId(aiAgentTaskScheduleVO.getId());
             taskScheduleVO.setDescription(aiAgentTaskScheduleVO.getDescription());
@@ -45,6 +52,7 @@ public class AgentTaskJob implements ITaskDataProvider {
                     dispatchService.dispatch(
                             ExecuteCommandEntity.builder()
                                     .aiAgentId(aiAgentTaskScheduleVO.getAgentId())
+                                    .message(aiAgentTaskScheduleVO.getTaskParam())
                                     .sessionId(String.valueOf(System.nanoTime()))
                                     .maxStep(1)
                                     .build(), new ResponseBodyEmitter());

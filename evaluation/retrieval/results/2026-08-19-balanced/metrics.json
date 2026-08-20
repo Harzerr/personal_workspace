@@ -1,0 +1,75 @@
+{
+  "productionParity": {
+    "sampleSize": 10,
+    "exactRankingMatches": 10,
+    "exactRankingRate": 1.0,
+    "meanTop10Overlap": 1.0,
+    "mismatches": []
+  },
+  "dev": {
+    "questionCount": 40,
+    "systems": {
+      "vector": {
+        "hitAt10": 0.85,
+        "hits": 34,
+        "mrrAt10": 0.65875,
+        "latencyP50Ms": 16.280188516248018,
+        "latencyP95Ms": 16.36669199797325
+      },
+      "bm25": {
+        "hitAt10": 0.375,
+        "hits": 15,
+        "mrrAt10": 0.21,
+        "latencyP50Ms": 0.7789880037307739,
+        "latencyP95Ms": 0.9124000207521021
+      },
+      "hybrid": {
+        "hitAt10": 0.85,
+        "hits": 34,
+        "mrrAt10": 0.41099206349206346,
+        "latencyP50Ms": 17.080932506360114,
+        "latencyP95Ms": 17.20938802463934
+      },
+      "hybridRewrite": {
+        "hitAt10": 0.85,
+        "hits": 34,
+        "mrrAt10": 0.4297420634920635,
+        "latencyP50Ms": 17.087383006582968,
+        "latencyP95Ms": 17.595164972590283
+      }
+    }
+  },
+  "test": {
+    "questionCount": 80,
+    "systems": {
+      "vector": {
+        "hitAt10": 0.825,
+        "hits": 66,
+        "mrrAt10": 0.634702380952381,
+        "latencyP50Ms": 16.378764499677345,
+        "latencyP95Ms": 18.81761901313439
+      },
+      "bm25": {
+        "hitAt10": 0.25,
+        "hits": 20,
+        "mrrAt10": 0.12303571428571429,
+        "latencyP50Ms": 0.7832659903215244,
+        "latencyP95Ms": 0.9480459848418832
+      },
+      "hybrid": {
+        "hitAt10": 0.825,
+        "hits": 66,
+        "mrrAt10": 0.4817261904761905,
+        "latencyP50Ms": 17.164915465400554,
+        "latencyP95Ms": 19.59212703513913
+      },
+      "hybridRewrite": {
+        "hitAt10": 0.9,
+        "hits": 72,
+        "mrrAt10": 0.5379761904761905,
+        "latencyP50Ms": 17.17186851601582,
+        "latencyP95Ms": 18.233248993055895
+      }
+    }
+  }
+}

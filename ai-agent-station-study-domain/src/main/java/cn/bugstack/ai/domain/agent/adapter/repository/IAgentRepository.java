@@ -51,4 +51,6 @@ public interface IAgentRepository {
 
     List<AiClientApiVO> queryAiClientApiVOListByApiIds(List<String> apiIdList);
 
+    List<AiClientModelVO> queryAiClientModelVOListByApiIds(List<String> apiIdList);
+
 }

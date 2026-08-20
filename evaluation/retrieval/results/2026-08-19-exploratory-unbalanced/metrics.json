@@ -1,0 +1,184 @@
+{
+  "productionParity": {
+    "sampleSize": 10,
+    "exactRankingMatches": 6,
+    "exactRankingRate": 0.6,
+    "meanTop10Overlap": 0.99,
+    "mismatches": [
+      {
+        "id": "Q7BA7C1C7FF",
+        "production": [
+          "923134bc-09b7-3841-845f-37d1de583a81",
+          "1bacb781-dd8d-326c-8aeb-eab4ab66ef40",
+          "370174e4-dca8-350c-9808-d97e6be657fe",
+          "5657aa19-d55e-3215-92ab-fc774933d73b",
+          "e9680661-0149-32f5-aa35-a75e7b996c15",
+          "0422210d-c88b-3fa7-9949-092131e45258",
+          "05faff32-5581-384e-9419-a7464c4a8e5d",
+          "57539a2c-5e49-335e-889f-48b885819e42",
+          "5cff63b7-fb82-3861-89ce-3c7a194b381c",
+          "415829ae-6a88-36b2-8795-6d18fb3f400c"
+        ],
+        "local": [
+          "923134bc-09b7-3841-845f-37d1de583a81",
+          "1bacb781-dd8d-326c-8aeb-eab4ab66ef40",
+          "370174e4-dca8-350c-9808-d97e6be657fe",
+          "5657aa19-d55e-3215-92ab-fc774933d73b",
+          "0422210d-c88b-3fa7-9949-092131e45258",
+          "e9680661-0149-32f5-aa35-a75e7b996c15",
+          "05faff32-5581-384e-9419-a7464c4a8e5d",
+          "57539a2c-5e49-335e-889f-48b885819e42",
+          "5cff63b7-fb82-3861-89ce-3c7a194b381c",
+          "415829ae-6a88-36b2-8795-6d18fb3f400c"
+        ]
+      },
+      {
+        "id": "Q2A8674FAED",
+        "production": [
+          "157dfde7-9c9c-383b-9c8d-7aeab441fcea",
+          "cbd162b8-c630-31b1-bde6-b5e133d36604",
+          "c596fc5f-66f9-3f77-a455-a8187615fe6e",
+          "7ac7a791-6b51-3bf7-a790-79ba1bb7fda5",
+          "d39d6bbd-3d56-3421-8b00-c755c15871e1",
+          "b43d1952-1a83-370c-9942-439a56a3b0e7",
+          "8bd0c101-d12f-308c-b161-ddcf44ab50ab",
+          "8f14059b-4d75-3b42-8b78-682f27c74acb",
+          "adc4bb15-96df-3876-b6de-d646cd65ddca",
+          "370174e4-dca8-350c-9808-d97e6be657fe"
+        ],
+        "local": [
+          "157dfde7-9c9c-383b-9c8d-7aeab441fcea",
+          "cbd162b8-c630-31b1-bde6-b5e133d36604",
+          "c596fc5f-66f9-3f77-a455-a8187615fe6e",
+          "7ac7a791-6b51-3bf7-a790-79ba1bb7fda5",
+          "d39d6bbd-3d56-3421-8b00-c755c15871e1",
+          "b43d1952-1a83-370c-9942-439a56a3b0e7",
+          "8bd0c101-d12f-308c-b161-ddcf44ab50ab",
+          "8f14059b-4d75-3b42-8b78-682f27c74acb",
+          "adc4bb15-96df-3876-b6de-d646cd65ddca",
+          "1bacb781-dd8d-326c-8aeb-eab4ab66ef40"
+        ]
+      },
+      {
+        "id": "Q498693BFBF",
+        "production": [
+          "157dfde7-9c9c-383b-9c8d-7aeab441fcea",
+          "c596fc5f-66f9-3f77-a455-a8187615fe6e",
+          "363f5f51-a929-3592-a776-33630bf0ba9e",
+          "415829ae-6a88-36b2-8795-6d18fb3f400c",
+          "5e1f3ed8-ae9e-3e4d-aab8-302b2fb00a89",
+          "d39d6bbd-3d56-3421-8b00-c755c15871e1",
+          "8f14059b-4d75-3b42-8b78-682f27c74acb",
+          "77ce3f65-00d9-39fa-a1b8-d7fda7bc10b3",
+          "e8ffabd6-9639-352c-89d8-f404be3728ac",
+          "8bd0c101-d12f-308c-b161-ddcf44ab50ab"
+        ],
+        "local": [
+          "157dfde7-9c9c-383b-9c8d-7aeab441fcea",
+          "c596fc5f-66f9-3f77-a455-a8187615fe6e",
+          "363f5f51-a929-3592-a776-33630bf0ba9e",
+          "415829ae-6a88-36b2-8795-6d18fb3f400c",
+          "5e1f3ed8-ae9e-3e4d-aab8-302b2fb00a89",
+          "8f14059b-4d75-3b42-8b78-682f27c74acb",
+          "d39d6bbd-3d56-3421-8b00-c755c15871e1",
+          "77ce3f65-00d9-39fa-a1b8-d7fda7bc10b3",
+          "e8ffabd6-9639-352c-89d8-f404be3728ac",
+          "8bd0c101-d12f-308c-b161-ddcf44ab50ab"
+        ]
+      },
+      {
+        "id": "Q12BC8CAE84",
+        "production": [
+          "e337226f-6da9-362a-9f6e-7716de042fad",
+          "f6f8fb0e-50b6-3eb0-9302-5de74ac086af",
+          "e9ab1992-372e-3b93-8eaf-41c9090e5b1c",
+          "a4cce980-85cf-3813-b0ac-7346fa4d029a",
+          "a8426e69-a3a4-37d2-96cf-746fff8fee44",
+          "51f739a1-d87e-3012-aa51-4223b1c6f013",
+          "66d4072a-4f12-32e5-bba1-e43ba4cca19d",
+          "08208a5c-d822-3777-97ae-0f816c0b22af",
+          "cf0a046c-3742-3c9c-a0f1-4beea504c2cb",
+          "1cfef778-0dcb-35ae-b3bc-fb7aa0a8f465"
+        ],
+        "local": [
+          "e337226f-6da9-362a-9f6e-7716de042fad",
+          "f6f8fb0e-50b6-3eb0-9302-5de74ac086af",
+          "a4cce980-85cf-3813-b0ac-7346fa4d029a",
+          "e9ab1992-372e-3b93-8eaf-41c9090e5b1c",
+          "a8426e69-a3a4-37d2-96cf-746fff8fee44",
+          "51f739a1-d87e-3012-aa51-4223b1c6f013",
+          "66d4072a-4f12-32e5-bba1-e43ba4cca19d",
+          "08208a5c-d822-3777-97ae-0f816c0b22af",
+          "cf0a046c-3742-3c9c-a0f1-4beea504c2cb",
+          "1cfef778-0dcb-35ae-b3bc-fb7aa0a8f465"
+        ]
+      }
+    ]
+  },
+  "dev": {
+    "questionCount": 40,
+    "systems": {
+      "vector": {
+        "hitAt10": 0.9,
+        "hits": 36,
+        "mrrAt10": 0.7163095238095238,
+        "latencyP50Ms": 17.15152050019242,
+        "latencyP95Ms": 17.855656013125554
+      },
+      "bm25": {
+        "hitAt10": 0.475,
+        "hits": 19,
+        "mrrAt10": 0.37023809523809526,
+        "latencyP50Ms": 0.8374384924536571,
+        "latencyP95Ms": 1.010323001537472
+      },
+      "hybrid": {
+        "hitAt10": 0.85,
+        "hits": 34,
+        "mrrAt10": 0.5969642857142857,
+        "latencyP50Ms": 18.014331013546325,
+        "latencyP95Ms": 18.78398601547815
+      },
+      "hybridRewrite": {
+        "hitAt10": 0.925,
+        "hits": 37,
+        "mrrAt10": 0.6936309523809524,
+        "latencyP50Ms": 17.994292997173034,
+        "latencyP95Ms": 19.386311003472656
+      }
+    }
+  },
+  "test": {
+    "questionCount": 80,
+    "systems": {
+      "vector": {
+        "hitAt10": 0.95,
+        "hits": 76,
+        "mrrAt10": 0.8395833333333333,
+        "latencyP50Ms": 16.891711013158783,
+        "latencyP95Ms": 18.094155995640904
+      },
+      "bm25": {
+        "hitAt10": 0.525,
+        "hits": 42,
+        "mrrAt10": 0.3310019841269841,
+        "latencyP50Ms": 0.853608493343927,
+        "latencyP95Ms": 0.9898749995045364
+      },
+      "hybrid": {
+        "hitAt10": 0.9375,
+        "hits": 75,
+        "mrrAt10": 0.7119047619047619,
+        "latencyP50Ms": 17.787022501579486,
+        "latencyP95Ms": 19.08403099514544
+      },
+      "hybridRewrite": {
+        "hitAt10": 0.9625,
+        "hits": 77,
+        "mrrAt10": 0.7112103174603175,
+        "latencyP50Ms": 17.76367901766207,
+        "latencyP95Ms": 18.612403015140444
+      }
+    }
+  }
+}

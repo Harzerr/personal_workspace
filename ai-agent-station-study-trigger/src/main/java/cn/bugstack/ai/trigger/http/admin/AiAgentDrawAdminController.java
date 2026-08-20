@@ -117,10 +117,6 @@ public class AiAgentDrawAdminController implements IAiAgentDrawAdminService {
         try {
             log.info("保存流程图配置请求：{}", request);
 
-            // 生成8位数字的唯一AgentId
-            String agentId = String.format("%08d", System.currentTimeMillis() % 100000000L);
-            request.setAgentId(agentId);
-
             // 参数校验
             if (!StringUtils.hasText(request.getConfigName())) {
                 return Response.<String>builder()
@@ -136,6 +132,19 @@ public class AiAgentDrawAdminController implements IAiAgentDrawAdminService {
                         .build();
             }
 
+            String configId = request.getConfigId();
+            if (!StringUtils.hasText(configId)) {
+                configId = UUID.randomUUID().toString().replace("-", "");
+            }
+            AiAgentDrawConfig existingConfig = aiAgentDrawConfigDao.queryByConfigId(configId);
+
+            // A draw configuration owns a stable agent ID. Changing it on every save
+            // leaves callers bound to stale flow rows and makes re-assembly ineffective.
+            String agentId = existingConfig != null && StringUtils.hasText(existingConfig.getAgentId())
+                    ? existingConfig.getAgentId()
+                    : String.format("%08d", System.currentTimeMillis() % 100000000L);
+            request.setAgentId(agentId);
+
             // 解析JSON中的agent信息
             String[] agentInfo = parseAgentInfoFromJson(request.getConfigData());
             String agentName = agentInfo[0];
@@ -143,23 +152,20 @@ public class AiAgentDrawAdminController implements IAiAgentDrawAdminService {
             String channel = agentInfo[2];
             String strategy = agentInfo[3];
 
-            aiAgentDao.insert(AiAgent.builder()
-                    .agentId(request.getAgentId())
+            AiAgent agent = AiAgent.builder()
+                    .agentId(agentId)
                     .agentName(agentName)
                     .channel(channel)
                     .strategy(strategy)
                     .status(1)
                     .description(description)
-                    .build());
-
-            // 生成配置ID（如果没有提供）
-            String configId = request.getConfigId();
-            if (!StringUtils.hasText(configId)) {
-                configId = UUID.randomUUID().toString().replace("-", "");
+                    .updateTime(LocalDateTime.now())
+                    .build();
+            if (aiAgentDao.queryByAgentId(agentId) == null) {
+                aiAgentDao.insert(agent);
+            } else {
+                aiAgentDao.updateByAgentId(agent);
             }
-
-            // 检查配置是否已存在
-            AiAgentDrawConfig existingConfig = aiAgentDrawConfigDao.queryByConfigId(configId);
 
             AiAgentDrawConfig drawConfig = new AiAgentDrawConfig();
             BeanUtils.copyProperties(request, drawConfig);
@@ -187,13 +193,11 @@ public class AiAgentDrawAdminController implements IAiAgentDrawAdminService {
                 // 解析JSON配置数据，生成关系映射并存储到ai_client_config表
                 try {
                     List<AiClientConfig> configRelations = DrawConfigParser.parseConfigData(request.getConfigData());
+                    if (existingConfig != null) {
+                        aiClientConfigDao.deleteByConfigId(configId);
+                        log.info("删除配置{}的旧关系数据", configId);
+                    }
                     if (!configRelations.isEmpty()) {
-                        // 先删除该配置相关的旧关系数据（如果是更新操作）
-                        if (existingConfig != null) {
-                            aiClientConfigDao.deleteBySourceId(configId);
-                            log.info("删除配置{}的旧关系数据", configId);
-                        }
-
                         // 批量插入新的关系数据
                         for (AiClientConfig config : configRelations) {
                             // 检查是否已经存在相同的记录
@@ -224,13 +228,11 @@ public class AiAgentDrawAdminController implements IAiAgentDrawAdminService {
                 // 解析JSON配置数据，提取client信息并保存agent-client关系
                 try {
                     List<AiAgentFlowConfig> agentFlowConfigs = parseClientInfoFromJson(request.getConfigData(), agentId);
+                    if (existingConfig != null) {
+                        aiAgentFlowConfigDao.deleteByAgentId(agentId);
+                        log.info("删除agentId{}的旧流程配置数据", agentId);
+                    }
                     if (!agentFlowConfigs.isEmpty()) {
-                        // 先删除该agentId相关的旧关系数据（如果是更新操作）
-                        if (existingConfig != null) {
-                            aiAgentFlowConfigDao.deleteByAgentId(agentId);
-                            log.info("删除agentId{}的旧流程配置数据", agentId);
-                        }
-
                         // 批量插入新的agent-client关系数据
                         for (AiAgentFlowConfig flowConfig : agentFlowConfigs) {
                             aiAgentFlowConfigDao.insert(flowConfig);
@@ -543,16 +545,20 @@ public class AiAgentDrawAdminController implements IAiAgentDrawAdminService {
             String agentId = drawConfig.getAgentId();
             log.info("删除流程图配置，configId: {}, agentId: {}", configId, agentId);
 
-            // 2. 删除拖拉拽配置
+            // 2. 删除该流程图拥有的资源关系
+            int relationResult = aiClientConfigDao.deleteByConfigId(configId);
+            log.info("删除流程图资源关系结果: {}", relationResult);
+
+            // 3. 删除拖拉拽配置
             int drawConfigResult = aiAgentDrawConfigDao.deleteByConfigId(configId);
             log.info("删除拖拉拽配置结果: {}", drawConfigResult);
 
-            // 3. 删除智能体配置
+            // 4. 删除智能体配置
             if (StringUtils.hasText(agentId)) {
                 int agentResult = aiAgentDao.deleteByAgentId(agentId);
                 log.info("删除智能体配置结果: {}", agentResult);
 
-                // 4. 删除智能体流程配置
+                // 5. 删除智能体流程配置
                 int flowConfigResult = aiAgentFlowConfigDao.deleteByAgentId(agentId);
                 log.info("删除智能体流程配置结果: {}", flowConfigResult);
             }

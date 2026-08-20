@@ -4,6 +4,7 @@ import cn.bugstack.ai.api.response.Response;
 import cn.bugstack.ai.types.enums.ResponseCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,13 +26,16 @@ public class WorkspaceKnowledgeController {
     private final WorkspaceKnowledgeService knowledgeService;
     private final WorkspaceDiffReviewService diffReviewService;
     private final WorkspaceMemoryService memoryService;
+    private final WorkspaceKnowledgeChatService knowledgeChatService;
 
     public WorkspaceKnowledgeController(WorkspaceKnowledgeService knowledgeService,
                                         WorkspaceDiffReviewService diffReviewService,
-                                        WorkspaceMemoryService memoryService) {
+                                        WorkspaceMemoryService memoryService,
+                                        WorkspaceKnowledgeChatService knowledgeChatService) {
         this.knowledgeService = knowledgeService;
         this.diffReviewService = diffReviewService;
         this.memoryService = memoryService;
+        this.knowledgeChatService = knowledgeChatService;
     }
 
     @PostMapping(value = "/{workspaceId}/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -50,6 +54,38 @@ public class WorkspaceKnowledgeController {
     @GetMapping("/{workspaceId}/summary")
     public Response<Map<String, Object>> summary(@PathVariable("workspaceId") String workspaceId) {
         return success(Map.of("workspaceId", workspaceId, "chunkCount", knowledgeService.documentCount(workspaceId)));
+    }
+
+    @PostMapping("/{workspaceId}/knowledge/reindex")
+    public Response<WorkspaceKnowledgeService.ReindexResult> reindex(@PathVariable("workspaceId") String workspaceId) {
+        return success(knowledgeService.reindexWorkspace(workspaceId));
+    }
+
+    @GetMapping("/{workspaceId}/knowledge/status")
+    public Response<WorkspaceKnowledgeService.KnowledgeStatus> knowledgeStatus(@PathVariable("workspaceId") String workspaceId) {
+        return success(knowledgeService.knowledgeStatus(workspaceId));
+    }
+
+    @PostMapping("/{workspaceId}/knowledge/chat/prepare")
+    public Response<WorkspaceKnowledgeChatService.ChatPreparation> prepareKnowledgeChat(
+            @PathVariable("workspaceId") String workspaceId,
+            @RequestBody KnowledgeChatRequest request) {
+        return success(knowledgeChatService.prepare(workspaceId, request.agentId(), request.sessionId(),
+                request.question(), request.limit()));
+    }
+
+    @GetMapping("/{workspaceId}/knowledge/sources")
+    public Response<List<WorkspaceKnowledgeService.KnowledgeSource>> knowledgeSources(
+            @PathVariable("workspaceId") String workspaceId,
+            @RequestParam(value = "limit", defaultValue = "30") int limit) {
+        return success(knowledgeService.recentSources(workspaceId, limit));
+    }
+
+    @DeleteMapping("/{workspaceId}/knowledge/sources")
+    public Response<WorkspaceKnowledgeService.DeleteSourceResult> deleteKnowledgeSource(
+            @PathVariable("workspaceId") String workspaceId,
+            @RequestParam("sourcePath") String sourcePath) {
+        return success(knowledgeService.deleteSource(workspaceId, sourcePath));
     }
 
     @PostMapping("/{workspaceId}/reviews/diff")
@@ -93,5 +129,8 @@ public class WorkspaceKnowledgeController {
     }
 
     public record MemoryFactsRequest(List<String> facts) {
+    }
+
+    public record KnowledgeChatRequest(String agentId, String sessionId, String question, Integer limit) {
     }
 }

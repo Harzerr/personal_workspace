@@ -1,0 +1,61 @@
+{
+  "targets": [
+    {
+      "targetId": "prod-main",
+      "workspaceIds": ["85374287"],
+      "displayName": "主生产服务器",
+      "environment": "production",
+      "enabled": true,
+      "thresholds": {
+        "cpuAttentionPercent": 80,
+        "cpuFaultPercent": 95,
+        "diskAttentionPercent": 80,
+        "diskFaultPercent": 92,
+        "memoryAttentionPercent": 85,
+        "memoryFaultPercent": 95
+      },
+      "projects": [
+        {
+          "projectId": "chatbot",
+          "displayName": "面面通",
+          "serviceUnits": [
+            "chatbot-backend.service",
+            "chatbot-evaluation-worker.service",
+            "chatbot-resume-worker.service",
+            "chatbot-mcp@search.service",
+            "chatbot-mcp@web_scrapping.service",
+            "redis-server.service"
+          ],
+          "containerNames": ["chatbot-qdrant-1"],
+          "endpoints": [
+            {"name": "后端 OpenAPI", "url": "http://127.0.0.1:8000/api/v1/openapi.json", "expectedStatuses": [200]},
+            {"name": "登录入口", "url": "http://127.0.0.1/login", "expectedStatuses": [200, 301, 302]}
+          ],
+          "dependencies": [
+            {"name": "Judge0", "type": "http", "url": "https://ce.judge0.com/about", "expectedStatuses": [200]},
+            {"name": "LiveKit", "type": "tcp", "host": "chatbot-krjgb72e.livekit.cloud", "port": 443}
+          ]
+        },
+        {
+          "projectId": "personal-ai-workspace",
+          "displayName": "Personal AI Workspace",
+          "serviceUnits": ["personal-ai-workspace.service"],
+          "containerNames": ["workspace-pgvector"],
+          "endpoints": [
+            {"name": "工作区入口", "url": "http://127.0.0.1/ai-agent-station/", "expectedStatuses": [200]},
+            {"name": "Agent 目录 API", "url": "http://127.0.0.1/ai-agent-study/api/v1/agent/query_available_agents", "expectedStatuses": [200]}
+          ],
+          "dependencies": []
+        },
+        {
+          "projectId": "shared-infrastructure",
+          "displayName": "共享基础设施",
+          "serviceUnits": ["nginx.service", "docker.service"],
+          "containerNames": [],
+          "endpoints": [],
+          "dependencies": []
+        }
+      ]
+    }
+  ]
+}

@@ -50,6 +50,14 @@ public interface IAiClientConfigDao {
     int deleteBySourceId(String sourceId);
 
     /**
+     * Delete relationships owned by a draw configuration.
+     *
+     * @param configId draw configuration ID stored in ext_param
+     * @return affected rows
+     */
+    int deleteByConfigId(@Param("configId") String configId);
+
+    /**
      * 根据ID查询AI客户端配置
      * @param id 主键ID
      * @return AI客户端配置对象

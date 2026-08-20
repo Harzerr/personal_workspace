@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="服务器项目运维工作流">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="Workspace 入口与编排" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;html=1;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1520" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="用户&#xa;选择服务器 / 项目 / 时间范围" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="2">
+          <mxGeometry x="40" y="50" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="动态运维表单&#xa;不写死项目名称" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="2">
+          <mxGeometry x="330" y="50" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="手动触发 / 定时触发" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="2">
+          <mxGeometry x="620" y="50" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="OPS_REPORT 编排器&#xa;生成 runId 与采集计划" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="2">
+          <mxGeometry x="930" y="50" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="7" value="只读采集层" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;html=1;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="220" width="1520" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="项目注册表&#xa;目标 / 服务 / 端点 / 阈值" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="7">
+          <mxGeometry x="50" y="70" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="WorkspaceOpsSnapshotService&#xa;校验范围 + 结构化采集" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="7">
+          <mxGeometry x="340" y="70" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="服务器运维只读 MCP&#xa;固定工具 + JSON Schema + 脱敏" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="7">
+          <mxGeometry x="680" y="70" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="目标服务器（注册数据）" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;html=1;pointerEvents=0;" vertex="1" parent="7">
+          <mxGeometry x="1030" y="40" width="440" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="面面通&#xa;API / Worker / Redis / Qdrant" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="11">
+          <mxGeometry x="20" y="50" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="Personal AI Workspace&#xa;Java / Nginx / pgvector" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="11">
+          <mxGeometry x="230" y="50" width="190" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="14" value="Agent 分析与质量控制" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;html=1;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="1520" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="确定性健康判定&#xa;FAULT / ATTENTION / UNKNOWN / HEALTHY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="14">
+          <mxGeometry x="50" y="70" width="270" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="运维信号分析员&#xa;证据关联与原因排序" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="14">
+          <mxGeometry x="380" y="70" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="运维报告执行员&#xa;生成结构化 Markdown" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="14">
+          <mxGeometry x="670" y="70" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="运维安全检察员&#xa;证据 / 风险 / 脱敏 / 回滚" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="14">
+          <mxGeometry x="960" y="70" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="确定性质检器&#xa;覆盖率 / 新鲜度 / 引用完整性" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="14">
+          <mxGeometry x="1270" y="60" width="200" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="报告与追踪" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;html=1;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="1520" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="项目健康矩阵&#xa;仅看异常 / 按项目筛选" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="20">
+          <mxGeometry x="180" y="60" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="Markdown 报告&#xa;复制 / 导出 .md" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="20">
+          <mxGeometry x="630" y="60" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="证据与审计记录&#xa;snapshotId / runId / collectedAt" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="20">
+          <mxGeometry x="1060" y="50" width="280" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="运行请求" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="读取范围" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=0.35;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="6" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="启动采集" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=0.65;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="6" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="35" value="允许的检查计划" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36" value="结构化工具调用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="37" value="只读采集" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="38" value="快照 + evidenceId" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="9" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="39" value="确定性状态" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="15" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="40" value="分析结果" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="16" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="报告草稿" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="17" target="18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="质检意见" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="18" target="19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="通过" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=0.25;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="19" target="21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="44" value="保存报告" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="19" target="22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="45" value="保存证据" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;exitX=0.75;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="19" target="23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="50" value="图例" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="930" width="560" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="50">
+          <mxGeometry x="20" y="40" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="服务与 Agent" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="60" y="36" width="100" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="53" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="50">
+          <mxGeometry x="180" y="40" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="54" value="注册与数据" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="220" y="36" width="100" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="55" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="50">
+          <mxGeometry x="340" y="40" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="56" value="安全控制" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="380" y="36" width="90" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="57" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="50">
+          <mxGeometry x="470" y="40" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="58" value="健康判定" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="510" y="36" width="90" height="24" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

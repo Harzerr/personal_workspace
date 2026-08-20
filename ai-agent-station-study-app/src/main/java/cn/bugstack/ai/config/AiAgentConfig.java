@@ -1,12 +1,13 @@
 package cn.bugstack.ai.config;
 
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
+import org.springframework.ai.openai.OpenAiEmbeddingOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
+import org.springframework.ai.document.MetadataMode;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,9 +30,10 @@ public class AiAgentConfig {
      * SELECT * FROM vector_store_openai
      */
     @Bean("vectorStore")
-    @ConditionalOnBean(name = "pgVectorJdbcTemplate")
-    public PgVectorStore pgVectorStore(@Value("${spring.ai.openai.base-url}") String baseUrl,
-                                       @Value("${spring.ai.openai.api-key}") String apiKey,
+    public PgVectorStore pgVectorStore(@Value("${workspace.knowledge.embedding.base-url}") String baseUrl,
+                                       @Value("${workspace.knowledge.embedding.api-key}") String apiKey,
+                                       @Value("${workspace.knowledge.embedding.model}") String model,
+                                       @Value("${workspace.knowledge.embedding.dimensions}") Integer dimensions,
                                        @Qualifier("pgVectorJdbcTemplate") JdbcTemplate jdbcTemplate) {
 
         OpenAiApi openAiApi = OpenAiApi.builder()
@@ -39,7 +41,11 @@ public class AiAgentConfig {
                 .apiKey(apiKey)
                 .build();
 
-        OpenAiEmbeddingModel embeddingModel = new OpenAiEmbeddingModel(openAiApi);
+        OpenAiEmbeddingOptions options = OpenAiEmbeddingOptions.builder()
+                .model(model)
+                .dimensions(dimensions)
+                .build();
+        OpenAiEmbeddingModel embeddingModel = new OpenAiEmbeddingModel(openAiApi, MetadataMode.EMBED, options);
         return PgVectorStore.builder(jdbcTemplate, embeddingModel)
                 .vectorTableName("vector_store_openai")
                 .build();

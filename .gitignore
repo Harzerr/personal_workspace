@@ -54,6 +54,16 @@ build/
 application-dev.yml
 application-prod.yml
 application-test.yml
+playwright-storage.json
+
+# Browser verification output and superseded static iterations
+/deploy/*.png
+/frontend-dist/static/css/workspace-ui-polish.*.css
+/frontend-dist/static/js/blog-workspace.20260817.js
+/frontend-dist/static/js/blog-workspace.20260817b.js
+/frontend-dist/static/js/blog-workspace.20260817c.js
+/frontend-dist/static/js/index.workspace-polish.*.js
+/frontend-dist/static/js/professional-workflows.*.js
 
 # Runtime output and local exports
 *.log

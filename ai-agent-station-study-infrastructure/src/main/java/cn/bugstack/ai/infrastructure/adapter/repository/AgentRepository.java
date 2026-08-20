@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,6 +59,9 @@ public class AgentRepository implements IAgentRepository {
 
     @Resource
     private IAiClientToolMcpDao aiClientToolMcpDao;
+
+    @Resource(name = "workspaceJdbcTemplate")
+    private JdbcTemplate workspaceJdbcTemplate;
 
     @Override
     public List<AiClientApiVO> queryAiClientApiVOListByClientIds(List<String> clientIdList) {
@@ -519,7 +523,7 @@ public class AgentRepository implements IAgentRepository {
                         .clientName(flowConfig.getClientName())
                         .clientType(flowConfig.getClientType())
                         .sequence(flowConfig.getSequence())
-                        .stepPrompt(flowConfig.getStepPrompt())
+                        .stepPrompt(withAgentSkills(aiAgentId, flowConfig.getStepPrompt()))
                         .build();
 
                 result.put(flowConfig.getClientType(), configVO);
@@ -560,13 +564,34 @@ public class AgentRepository implements IAgentRepository {
                     .clientName(flowConfig.getClientName())
                     .clientType(flowConfig.getClientType())
                     .sequence(flowConfig.getSequence())
-                    .stepPrompt(flowConfig.getStepPrompt())
+                    .stepPrompt(withAgentSkills(aiAgentId, flowConfig.getStepPrompt()))
                     .build();
 
             aiAgentClientFlowConfigVOS.add(configVO);
         }
 
         return aiAgentClientFlowConfigVOS;
+    }
+
+    private String withAgentSkills(String agentId, String stepPrompt) {
+        try {
+            List<String> instructions = workspaceJdbcTemplate.queryForList("""
+                    SELECT s.instructions
+                    FROM workspace_agent_skill b
+                    JOIN workspace_skill s ON s.skill_id = b.skill_id
+                    WHERE b.agent_id = ? AND b.status = 1 AND s.status = 1
+                    ORDER BY b.sequence, s.skill_name
+                    """, String.class, agentId);
+            if (instructions.isEmpty()) return stepPrompt;
+            String skillBlock = instructions.stream()
+                    .map(instruction -> instruction.replace("%", "%%"))
+                    .collect(Collectors.joining("\n\n"));
+            return (stepPrompt == null ? "" : stepPrompt)
+                    + "\n\nReusable Agent Skills (trusted orchestration instructions):\n" + skillBlock;
+        } catch (Exception e) {
+            log.debug("Agent skill table is unavailable or unreadable for agent {}", agentId, e);
+            return stepPrompt;
+        }
     }
 
     @Override
@@ -633,6 +658,27 @@ public class AgentRepository implements IAgentRepository {
                     .build());
         }
         return aiClientApiVOS;
+    }
+
+    @Override
+    public List<AiClientModelVO> queryAiClientModelVOListByApiIds(List<String> apiIdList) {
+        List<AiClientModelVO> models = new ArrayList<>();
+        for (String apiId : apiIdList) {
+            List<AiClientModel> apiModels = aiClientModelDao.queryByApiId(apiId);
+            for (AiClientModel model : apiModels) {
+                if (model.getStatus() == null || model.getStatus() != 1) {
+                    continue;
+                }
+                models.add(AiClientModelVO.builder()
+                        .modelId(model.getModelId())
+                        .apiId(model.getApiId())
+                        .modelName(model.getModelName())
+                        .modelType(model.getModelType())
+                        .toolMcpIds(List.of())
+                        .build());
+            }
+        }
+        return models;
     }
 
 }

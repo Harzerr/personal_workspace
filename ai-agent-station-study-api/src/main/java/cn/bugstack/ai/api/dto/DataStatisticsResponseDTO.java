@@ -59,17 +59,32 @@ public class DataStatisticsResponseDTO implements Serializable {
     private Long modelCount;
 
     /**
-     * 今日请求数量（模拟数据，实际项目中需要从日志或统计表获取）
+     * 启用的模型 API 数量
+     */
+    private Long clientApiCount;
+
+    /**
+     * 启用的 Agent 流程装配数量
+     */
+    private Long workflowConfigCount;
+
+    /**
+     * 启用的定时任务数量
+     */
+    private Long scheduledTaskCount;
+
+    /**
+     * 当前工作空间今日执行数量
      */
     private Long todayRequestCount;
 
     /**
-     * 成功率（模拟数据，实际项目中需要从日志或统计表计算）
+     * 当前工作空间已结束执行的成功率
      */
     private Double successRate;
 
     /**
-     * 运行中任务数量（模拟数据，实际项目中需要从任务调度表获取）
+     * 当前工作空间运行中或等待重试的任务数量
      */
     private Long runningTaskCount;
 }

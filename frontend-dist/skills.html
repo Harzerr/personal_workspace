@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill 管理 - Personal AI Workspace</title>
+  <link rel="icon" href="/ai-agent-station/favicon.ico">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/workspace-standalone.20260818.css?v=20260818f">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/rag-skills.20260818.css?v=20260818j">
+</head>
+<body class="workspace-resource-shell" data-resource-page="skills">
+  <aside id="workspaceShellSidebar" class="workspace-shell-sidebar">
+    <a class="workspace-shell-brand" href="/ai-agent-station/dashboard">
+      <span class="workspace-shell-mark" aria-hidden="true">AI</span>
+      <span class="workspace-shell-brand-copy"><strong>Personal AI Workspace</strong><small>Agent 自动化与知识工作平台</small></span>
+    </a>
+    <nav class="workspace-shell-nav" aria-label="工作台导航">
+      <a href="/ai-agent-station/dashboard" data-label="概览"><i aria-hidden="true">⌂</i><span>概览</span></a>
+      <a href="/ai-agent-station/personal-workspace" data-label="项目助手"><i aria-hidden="true">◇</i><span>项目助手</span></a>
+      <a href="/ai-agent-station/workflows.html" data-label="工作流运行"><i aria-hidden="true">◷</i><span>工作流运行</span></a>
+      <a href="/ai-agent-station/blog.html" data-label="内容自动化"><i aria-hidden="true">✎</i><span>内容自动化</span></a>
+      <section class="workspace-shell-nav-group">
+        <div class="workspace-shell-nav-parent" data-label="Agent 编排"><i aria-hidden="true">▦</i><span>Agent 编排</span><b>›</b></div>
+      </section>
+      <section class="workspace-shell-nav-group active">
+        <div class="workspace-shell-nav-parent" data-label="运行资源"><i aria-hidden="true">▣</i><span>运行资源</span><b>⌃</b></div>
+        <div class="workspace-shell-nav-children">
+          <a href="/ai-agent-station/client-management">执行角色</a>
+          <a class="active" href="/ai-agent-station/skills.html" aria-current="page">Skill 管理</a>
+          <a href="/ai-agent-station/knowledge-bases.html">知识库管理</a>
+          <a href="/ai-agent-station/client-model-management">模型配置</a>
+          <a href="/ai-agent-station/ai-client-api-management">模型 API</a>
+          <a href="/ai-agent-station/client-system-prompt-management">Prompt 配置</a>
+          <a href="/ai-agent-station/client-tool-mcp-management">MCP 工具</a>
+        </div>
+      </section>
+    </nav>
+    <div class="workspace-shell-user">
+      <span id="shellUserInitial">U</span>
+      <span class="workspace-shell-user-copy"><strong id="shellUsername">工作台用户</strong><small>个人工作台</small></span>
+    </div>
+  </aside>
+  <header class="workspace-shell-topbar">
+    <button id="standaloneSidebarToggle" class="workspace-shell-toggle" type="button" title="收起侧边栏" aria-label="收起侧边栏"><span aria-hidden="true">‹</span></button>
+    <div class="workspace-shell-topbar-user"><span><strong id="shellTopbarUsername">工作台用户</strong><small>个人工作台</small></span><b id="shellTopbarInitial">U</b></div>
+  </header>
+
+  <input id="workspaceId" type="hidden" value="personal-workspace">
+
+  <nav class="workspace-shell-mobile-nav" aria-label="移动端工作台导航">
+    <a href="/ai-agent-station/dashboard">概览</a>
+    <a href="/ai-agent-station/personal-workspace">助手</a>
+    <a href="/ai-agent-station/workflows.html">工作流</a>
+    <a class="active" href="/ai-agent-station/skills.html">Skill</a>
+  </nav>
+
+  <main class="resource-main">
+    <section class="resource-heading">
+      <div><span>REUSABLE AGENT CAPABILITIES</span><h1>Skill 管理</h1><p>维护可复用执行指令，并将能力按需装配到 Agent。</p></div>
+      <button class="icon-button" id="refreshButton" type="button" title="刷新 Skill 数据" aria-label="刷新 Skill 数据">↻</button>
+    </section>
+
+    <section id="skillsPanel" class="resource-panel" aria-label="Skill 管理">
+      <div class="skill-toolbar">
+        <div><h2>可复用 Skills</h2><p><span id="skillCount">0</span> 项能力，绑定后会注入 Agent 的执行提示词。</p></div>
+        <div class="toolbar-actions"><input id="skillSearch" type="search" placeholder="搜索名称或类别"><button class="button primary" id="createSkillButton" type="button">新建 Skill</button></div>
+      </div>
+      <div class="management-table-wrap">
+        <table class="management-table skill-table">
+          <thead><tr><th>Skill 名称</th><th>类别</th><th>状态</th><th>已绑定 Agent</th><th>描述</th><th class="actions-column">操作</th></tr></thead>
+          <tbody id="skillList" aria-live="polite"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="skillDetailDialog" class="resource-detail-dialog">
+    <section class="skill-detail" id="skillDetail">
+      <div class="empty-state">选择一个 Skill 查看指令和 Agent 绑定。</div>
+    </section>
+  </dialog>
+
+  <dialog id="skillDialog" class="skill-dialog">
+    <form id="skillForm" method="dialog">
+      <div class="dialog-heading"><div><span>REUSABLE CAPABILITY</span><h2 id="dialogTitle">新建 Skill</h2></div><button class="icon-button" id="closeDialogButton" type="button" title="关闭" aria-label="关闭">×</button></div>
+      <input id="skillId" type="hidden">
+      <label><span>名称</span><input id="skillName" maxlength="128" required placeholder="例如：技术文章事实核查"></label>
+      <div class="form-row">
+        <label><span>类别</span><select id="skillCategory"><option value="GENERAL">通用</option><option value="WRITING">写作</option><option value="REVIEW">审查</option><option value="RESEARCH">调研</option><option value="OPERATIONS">运维</option><option value="KNOWLEDGE">知识</option></select></label>
+        <label class="toggle-label"><span>状态</span><span class="toggle-control"><input id="skillStatus" type="checkbox" checked><b></b><em>启用</em></span></label>
+      </div>
+      <label><span>描述</span><input id="skillDescription" maxlength="512" placeholder="说明该能力解决什么问题"></label>
+      <label><span>执行指令</span><textarea id="skillInstructions" maxlength="12000" rows="9" required placeholder="写清适用范围、执行规则、输出要求和禁止事项。"></textarea></label>
+      <div class="dialog-actions"><button class="button secondary" id="cancelDialogButton" type="button">取消</button><button class="button primary" type="submit">保存 Skill</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script defer src="/ai-agent-station/static/js/rag-skills.20260818.js?v=20260818g"></script>
+</body>
+</html>

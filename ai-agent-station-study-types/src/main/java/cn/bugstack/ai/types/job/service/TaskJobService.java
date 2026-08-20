@@ -30,6 +30,7 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
      * 任务ID与任务执行器的映射，用于记录已添加的任务
      */
     private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+    private final Map<Long, String> taskSignatures = new ConcurrentHashMap<>();
 
     /**
      * 新的构造函数，不依赖ITaskExecutor
@@ -99,6 +100,7 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
             }
 
             ScheduledFuture<?> future = scheduledTasks.remove(taskId);
+            taskSignatures.remove(taskId);
             if (future != null) {
                 future.cancel(true);
                 log.info("任务移除成功，ID: {}", taskId);
@@ -127,6 +129,7 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
             );
 
             scheduledTasks.put(task.getId(), future);
+            taskSignatures.put(task.getId(), signature(task));
 
             log.info("任务调度成功（函数式），ID: {}", task.getId());
         } catch (Exception e) {
@@ -172,9 +175,13 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
                 Long taskId = task.getId();
                 currentTaskIds.put(taskId, true);
 
-                // 如果任务已经存在，则跳过
-                if (scheduledTasks.containsKey(taskId)) {
+                String signature = signature(task);
+                if (scheduledTasks.containsKey(taskId) && signature.equals(taskSignatures.get(taskId))) {
                     continue;
+                }
+
+                if (scheduledTasks.containsKey(taskId)) {
+                    removeTask(taskId);
                 }
 
                 // 创建并调度新任务
@@ -185,6 +192,7 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
             scheduledTasks.keySet().removeIf(taskId -> {
                 if (!currentTaskIds.containsKey(taskId)) {
                     ScheduledFuture<?> future = scheduledTasks.remove(taskId);
+                    taskSignatures.remove(taskId);
                     if (future != null) {
                         future.cancel(true);
                         log.info("已移除任务，ID: {}", taskId);
@@ -223,6 +231,7 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
             // 从调度器中移除这些任务
             for (Long taskId : allInvalidTaskIds) {
                 ScheduledFuture<?> future = scheduledTasks.remove(taskId);
+                taskSignatures.remove(taskId);
                 if (future != null) {
                     future.cancel(true);
                     log.info("已移除无效任务，ID: {}", taskId);
@@ -245,6 +254,7 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
             }
         });
         scheduledTasks.clear();
+        taskSignatures.clear();
         log.info("所有任务已停止");
     }
 
@@ -256,6 +266,10 @@ public class TaskJobService implements ITaskJobService, DisposableBean {
     @Override
     public void destroy() {
         stopAllTasks();
+    }
+
+    private String signature(TaskScheduleVO task) {
+        return String.valueOf(task.getCronExpression()) + "\n" + String.valueOf(task.getTaskParam());
     }
 
 }

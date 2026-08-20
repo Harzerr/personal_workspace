@@ -2,6 +2,7 @@ package cn.bugstack.ai.trigger.http.workspace;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -25,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -35,20 +37,34 @@ public class WorkspaceKnowledgeService {
     private static final Pattern WORKSPACE_ID = Pattern.compile("[A-Za-z0-9_-]{1,64}");
     private static final long MAX_FILE_SIZE = 3L * 1024L * 1024L;
     private static final int MAX_FILES_PER_IMPORT = 30;
+    private static final Set<String> TEXT_EXTENSIONS = Set.of(
+            "java", "md", "markdown", "txt", "py", "js", "jsx", "ts", "tsx", "vue",
+            "go", "rs", "c", "h", "cpp", "hpp", "cs", "kt", "kts", "scala", "sql",
+            "html", "htm", "css", "scss", "less", "xml", "json", "yaml", "yml", "toml",
+            "properties", "gradle", "sh", "ps1", "bat", "dockerfile");
 
     private final JdbcTemplate jdbcTemplate;
     private final VectorStore vectorStore;
     private final WorkspaceChunker chunker;
     private final WorkspaceLexicalRetriever lexicalRetriever;
+    private final String embeddingBaseUrl;
+    private final String embeddingModel;
+    private final int embeddingDimensions;
 
     public WorkspaceKnowledgeService(@Qualifier("workspaceJdbcTemplate") JdbcTemplate jdbcTemplate,
                                      @Qualifier("vectorStore") VectorStore vectorStore,
                                      WorkspaceChunker chunker,
-                                     WorkspaceLexicalRetriever lexicalRetriever) {
+                                     WorkspaceLexicalRetriever lexicalRetriever,
+                                     @Value("${workspace.knowledge.embedding.base-url}") String embeddingBaseUrl,
+                                     @Value("${workspace.knowledge.embedding.model}") String embeddingModel,
+                                     @Value("${workspace.knowledge.embedding.dimensions}") int embeddingDimensions) {
         this.jdbcTemplate = jdbcTemplate;
         this.vectorStore = vectorStore;
         this.chunker = chunker;
         this.lexicalRetriever = lexicalRetriever;
+        this.embeddingBaseUrl = embeddingBaseUrl;
+        this.embeddingModel = embeddingModel;
+        this.embeddingDimensions = embeddingDimensions;
     }
 
     @PostConstruct
@@ -103,6 +119,8 @@ public class WorkspaceKnowledgeService {
                 continue;
             }
 
+            jdbcTemplate.update("DELETE FROM vector_store_openai WHERE metadata ->> 'workspace_id' = ? AND metadata ->> 'source_path' = ?",
+                    workspaceId, sourcePath);
             jdbcTemplate.update("DELETE FROM workspace_chunk WHERE workspace_id = ? AND source_path = ?", workspaceId, sourcePath);
             LocalDateTime now = LocalDateTime.now();
             List<Object[]> rows = new ArrayList<>();
@@ -179,6 +197,87 @@ public class WorkspaceKnowledgeService {
         return count == null ? 0 : count;
     }
 
+    public ReindexResult reindexWorkspace(String workspaceId) {
+        validateWorkspaceId(workspaceId);
+        List<WorkspaceChunk> chunks = jdbcTemplate.query("""
+                        SELECT id, workspace_id, source_path, language, chunk_type, start_line, end_line, content, content_hash, created_at
+                        FROM workspace_chunk WHERE workspace_id = ? ORDER BY source_path, start_line
+                        """,
+                (rs, rowNum) -> new WorkspaceChunk(
+                        rs.getString("id"), rs.getString("workspace_id"), rs.getString("source_path"),
+                        rs.getString("language"), rs.getString("chunk_type"), rs.getInt("start_line"),
+                        rs.getInt("end_line"), rs.getString("content"), rs.getString("content_hash"),
+                        rs.getTimestamp("created_at").toLocalDateTime()),
+                workspaceId);
+
+        jdbcTemplate.update("DELETE FROM vector_store_openai WHERE metadata ->> 'workspace_id' = ?", workspaceId);
+        int indexedChunks = 0;
+        for (int offset = 0; offset < chunks.size(); offset += 20) {
+            List<Document> documents = chunks.subList(offset, Math.min(offset + 20, chunks.size())).stream()
+                    .map(chunk -> Document.builder()
+                            .id(chunk.id())
+                            .text(chunk.content())
+                            .metadata(Map.of(
+                                    "workspace_id", chunk.workspaceId(),
+                                    "chunk_id", chunk.id(),
+                                    "source_path", chunk.sourcePath(),
+                                    "language", chunk.language(),
+                                    "chunk_type", chunk.chunkType()))
+                            .build())
+                    .toList();
+            vectorStore.add(documents);
+            indexedChunks += documents.size();
+        }
+        return new ReindexResult(workspaceId, chunks.size(), indexedChunks);
+    }
+
+    public KnowledgeStatus knowledgeStatus(String workspaceId) {
+        validateWorkspaceId(workspaceId);
+        Integer chunkCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM workspace_chunk WHERE workspace_id = ?", Integer.class, workspaceId);
+        Integer sourceCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(DISTINCT source_path) FROM workspace_chunk WHERE workspace_id = ?", Integer.class, workspaceId);
+        Integer vectorCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM vector_store_openai WHERE metadata ->> 'workspace_id' = ?", Integer.class, workspaceId);
+        int chunks = chunkCount == null ? 0 : chunkCount;
+        int vectors = vectorCount == null ? 0 : vectorCount;
+        String state = chunks == 0 ? "EMPTY" : vectors == chunks ? "READY" : vectors == 0 ? "LEXICAL_ONLY" : "PARTIAL";
+        return new KnowledgeStatus(workspaceId, chunks, sourceCount == null ? 0 : sourceCount, vectors,
+                true, vectors > 0, "RRF", embeddingBaseUrl, embeddingModel, embeddingDimensions, state);
+    }
+
+    public List<KnowledgeSource> recentSources(String workspaceId, int limit) {
+        validateWorkspaceId(workspaceId);
+        int safeLimit = Math.min(Math.max(limit, 1), 30);
+        return jdbcTemplate.query("""
+                        SELECT source_path, language, COUNT(*) AS chunk_count, MAX(updated_at) AS updated_at,
+                               LEFT(STRING_AGG(content, E'\n\n' ORDER BY start_line), 6000) AS excerpt
+                        FROM workspace_chunk
+                        WHERE workspace_id = ?
+                        GROUP BY source_path, language
+                        ORDER BY MAX(updated_at) DESC
+                        LIMIT ?
+                        """,
+                (rs, rowNum) -> new KnowledgeSource(rs.getString("source_path"), rs.getString("language"),
+                        rs.getInt("chunk_count"), rs.getString("excerpt"),
+                        rs.getTimestamp("updated_at").toLocalDateTime()),
+                workspaceId, safeLimit);
+    }
+
+    @Transactional
+    public DeleteSourceResult deleteSource(String workspaceId, String sourcePath) {
+        validateWorkspaceId(workspaceId);
+        if (!StringUtils.hasText(sourcePath)) {
+            throw new IllegalArgumentException("sourcePath is required");
+        }
+        int vectorCount = jdbcTemplate.update(
+                "DELETE FROM vector_store_openai WHERE metadata ->> 'workspace_id' = ? AND metadata ->> 'source_path' = ?",
+                workspaceId, sourcePath);
+        int chunkCount = jdbcTemplate.update(
+                "DELETE FROM workspace_chunk WHERE workspace_id = ? AND source_path = ?", workspaceId, sourcePath);
+        return new DeleteSourceResult(workspaceId, sourcePath, chunkCount, vectorCount);
+    }
+
     private void validateWorkspaceId(String workspaceId) {
         if (workspaceId == null || !WORKSPACE_ID.matcher(workspaceId).matches()) {
             throw new IllegalArgumentException("workspaceId may only contain letters, numbers, underscores, and hyphens");
@@ -194,17 +293,25 @@ public class WorkspaceKnowledgeService {
         if (normalized.contains("../") || normalized.startsWith("/") || normalized.contains("\u0000")) {
             throw new IllegalArgumentException("Unsafe source path: " + rawName);
         }
+        if (normalized.length() > 512) {
+            throw new IllegalArgumentException("Source path exceeds 512 characters: " + rawName);
+        }
         return normalized;
     }
 
     private String languageOf(String sourcePath) {
         int dot = sourcePath.lastIndexOf('.');
         String extension = dot < 0 ? "" : sourcePath.substring(dot + 1).toLowerCase(Locale.ROOT);
+        if (sourcePath.toLowerCase(Locale.ROOT).endsWith("/dockerfile") || sourcePath.equalsIgnoreCase("Dockerfile")) {
+            return "dockerfile";
+        }
+        if (!TEXT_EXTENSIONS.contains(extension)) {
+            throw new IllegalArgumentException("Unsupported text file type: " + sourcePath);
+        }
         return switch (extension) {
-            case "java" -> "java";
             case "md", "markdown" -> "markdown";
             case "txt" -> "text";
-            default -> throw new IllegalArgumentException("Unsupported file type: " + sourcePath + ". Use .java, .md, .markdown, or .txt");
+            default -> extension;
         };
     }
 
@@ -275,6 +382,22 @@ public class WorkspaceKnowledgeService {
     }
 
     public record ImportResult(String workspaceId, int importedFiles, int importedChunks) {
+    }
+
+    public record ReindexResult(String workspaceId, int totalChunks, int indexedChunks) {
+    }
+
+    public record DeleteSourceResult(String workspaceId, String sourcePath, int deletedChunks, int deletedVectors) {
+    }
+
+    public record KnowledgeStatus(String workspaceId, int chunkCount, int sourceCount, int vectorCount,
+                                  boolean lexicalEnabled, boolean semanticEnabled, String fusionMethod,
+                                  String embeddingBaseUrl, String embeddingModel, int embeddingDimensions,
+                                  String state) {
+    }
+
+    public record KnowledgeSource(String sourcePath, String language, int chunkCount, String excerpt,
+                                  LocalDateTime updatedAt) {
     }
 
     public record SearchResult(String id, String sourcePath, String language, String chunkType, int startLine,

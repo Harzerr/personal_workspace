@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工作流运行 - Personal AI Workspace</title>
+  <link rel="icon" href="/ai-agent-station/favicon.ico">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/professional-workflows.20260817.css?v=20260818c">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/workspace-standalone.20260818.css?v=20260818c">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/workflow-runtime.20260818.css?v=20260819d">
+</head>
+<body>
+  <header class="workspace-global-header">
+    <a class="workspace-global-brand" href="/ai-agent-station/dashboard" aria-label="返回运行中心">
+      <span class="workspace-global-mark" aria-hidden="true">AI</span>
+      <span><strong>Personal AI Workspace</strong><small>Agent 自动化与知识工作平台</small></span>
+    </a>
+    <nav class="workspace-global-nav" aria-label="核心工作区">
+      <a href="/ai-agent-station/dashboard">概览</a>
+      <a class="active" href="/ai-agent-station/workflows.html" aria-current="page">工作流运行</a>
+    </nav>
+    <div class="workspace-global-tools">
+      <label class="workspace-field"><span>工作空间</span><input id="workspaceId" maxlength="64" value="85374287"></label>
+      <a class="workspace-icon-link" href="/ai-agent-station/agent-list" title="系统装配" aria-label="系统装配">⚙</a>
+    </div>
+  </header>
+
+  <main class="runtime-shell">
+    <header class="runtime-heading">
+      <div><span>ASSEMBLED WORKFLOWS</span><h1>工作流运行</h1><p>已启用的编排会自动出现在这里，并生成对应的运行交互与执行链。</p></div>
+      <button class="icon-button" id="refreshButton" type="button" title="刷新编排和运行记录" aria-label="刷新编排和运行记录">↻</button>
+    </header>
+
+    <div class="runtime-layout">
+      <aside class="workflow-catalog" aria-labelledby="catalogTitle">
+        <div class="catalog-heading"><div><h2 id="catalogTitle">已装配工作流</h2><p id="workflowCount">读取中</p></div><a href="/ai-agent-station/agent-list">管理编排</a></div>
+        <label class="catalog-search"><span aria-hidden="true">⌕</span><input id="workflowSearch" type="search" placeholder="搜索工作流或执行角色" aria-label="搜索工作流"></label>
+        <div class="catalog-list" id="workflowCatalog" aria-live="polite"></div>
+      </aside>
+
+      <section class="runtime-workspace" aria-live="polite">
+        <div class="workflow-summary">
+          <div class="workflow-identity"><div class="workflow-kind" id="workflowKind">工作流</div><h2 id="workflowName">选择工作流</h2><p id="workflowDescription">从左侧选择一个已启用的编排方案。</p></div>
+          <div class="agent-state"><span id="readinessBadge">检查中</span><code id="agentId">Agent</code></div>
+        </div>
+
+        <section class="chain-panel" aria-labelledby="chainTitle">
+          <div class="section-heading compact"><div><h2 id="chainTitle">执行链</h2><p>来自当前编排画布</p></div><span id="modelName" class="model-label"></span></div>
+          <ol class="execution-chain dynamic-chain" id="executionChain"></ol>
+        </section>
+
+        <div class="workspace-grid runtime-grid">
+          <section class="runner" aria-labelledby="runTitle">
+            <div class="section-heading"><div><h2 id="runTitle">运行交互</h2><p id="runHint">输入将交给当前 Agent 工作流处理。</p></div><a class="context-link hidden" id="contextLink" href="#"></a></div>
+            <div id="workflowFormHost"></div>
+          </section>
+
+          <aside class="history" aria-labelledby="historyTitle">
+            <div class="section-heading"><div><h2 id="historyTitle">运行记录</h2><p id="runCount">0 条</p></div></div>
+            <div class="run-list" id="runList"></div>
+          </aside>
+        </div>
+
+        <section class="result-band hidden" id="resultBand" aria-labelledby="resultTitle">
+          <div class="result-header">
+            <div><div class="result-kicker"><span id="resultStatus"></span><span id="resultTime"></span></div><h2 id="resultTitle">运行结果</h2></div>
+            <div class="result-actions"><button class="button secondary" id="copyButton" type="button">复制</button><button class="button secondary" id="downloadButton" type="button">导出 .md</button></div>
+          </div>
+          <div class="result-meta" id="resultMeta"></div>
+          <div class="review-strip" id="reviewStrip"></div>
+          <article class="markdown-report" id="reportViewer"></article>
+          <div class="error-panel hidden" id="errorPanel"></div>
+          <div class="references" id="references"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script defer src="/ai-agent-station/static/js/workflow-runtime.20260818.js?v=20260819g"></script>
+</body>
+</html>

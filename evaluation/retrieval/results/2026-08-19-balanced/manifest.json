@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-08-19T10:35:08.299607+00:00",
+  "corpusHash": "d037ff550329d72498e7e35e24e05510e3ea9e6b4d89636352b990901b881d20",
+  "chunkCount": 202,
+  "sourceCount": 8,
+  "vectorCount": 202,
+  "sources": [
+    {
+      "path": "README.md",
+      "chunkCount": 14
+    },
+    {
+      "path": "WorkspaceAgentClientResolver.java",
+      "chunkCount": 12
+    },
+    {
+      "path": "WorkspaceBlogWorkflowService.java",
+      "chunkCount": 28
+    },
+    {
+      "path": "WorkspaceChunker.java",
+      "chunkCount": 10
+    },
+    {
+      "path": "WorkspaceKnowledgeService.java",
+      "chunkCount": 27
+    },
+    {
+      "path": "WorkspaceLexicalRetriever.java",
+      "chunkCount": 6
+    },
+    {
+      "path": "WorkspaceMemoryService.java",
+      "chunkCount": 27
+    },
+    {
+      "path": "WorkspaceProfessionalWorkflowService.java",
+      "chunkCount": 78
+    }
+  ],
+  "workspaceId": "personal-workspace",
+  "seed": 20260819,
+  "topK": 10,
+  "rrfK": 60.0,
+  "embeddingModel": "qwen/qwen3-embedding-8b",
+  "embeddingDimensions": 1536,
+  "generationModel": "qwen/qwen3.7-flash"
+}

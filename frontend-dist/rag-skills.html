@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG 与 Skill 管理 - Personal AI Workspace</title>
+  <script>
+    location.replace(new URLSearchParams(location.search).get("tab") === "skills"
+      ? "/ai-agent-station/skills.html"
+      : "/ai-agent-station/knowledge-bases.html");
+  </script>
+  <link rel="icon" href="/ai-agent-station/favicon.ico">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/workspace-standalone.20260818.css?v=20260818b">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/rag-skills.20260818.css?v=20260818d">
+</head>
+<body>
+  <header class="workspace-global-header">
+    <a class="workspace-global-brand" href="/ai-agent-station/dashboard" aria-label="返回运行中心">
+      <span class="workspace-global-mark" aria-hidden="true">AI</span>
+      <span><strong>Personal AI Workspace</strong><small>Agent 自动化与知识工作平台</small></span>
+    </a>
+    <nav class="workspace-global-nav" aria-label="核心工作区">
+      <a href="/ai-agent-station/dashboard">概览</a>
+      <a href="/ai-agent-station/personal-workspace">项目助手</a>
+      <a href="/ai-agent-station/workflows.html">工作流运行</a>
+      <a class="active" href="/ai-agent-station/rag-skills.html" aria-current="page">能力装配</a>
+    </nav>
+    <div class="workspace-global-tools">
+      <label class="workspace-field"><span>工作空间</span><input id="workspaceId" maxlength="64" value="personal-workspace"></label>
+      <a class="workspace-icon-link" href="/ai-agent-station/agent-list" title="Agent 编排" aria-label="Agent 编排">⚙</a>
+    </div>
+  </header>
+
+  <main class="resource-main">
+    <section class="resource-heading">
+      <div><span>KNOWLEDGE & CAPABILITIES</span><h1>RAG 与 Skill 管理</h1><p>管理检索基础设施和可复用 Agent 能力，并保持运行配置可追踪。</p></div>
+      <button class="icon-button" id="refreshButton" type="button" title="刷新全部数据" aria-label="刷新全部数据">↻</button>
+    </section>
+
+    <div class="resource-tabs" role="tablist" aria-label="能力资源视图">
+      <button id="ragTab" type="button" role="tab" data-tab="rag">RAG 管理</button>
+      <button id="skillsTab" type="button" role="tab" data-tab="skills">Skill 管理</button>
+    </div>
+
+    <section id="ragPanel" class="resource-panel" role="tabpanel" aria-labelledby="ragTab">
+      <div class="status-grid" id="ragMetrics"></div>
+      <section class="resource-section source-import-section">
+        <div class="section-heading">
+          <div><h2>项目上下文</h2><p>上传项目源码、配置和文档，按工作空间建立可检索知识源。</p></div>
+          <span class="source-selection" id="sourceSelection">未选择文件</span>
+        </div>
+        <div class="source-import-layout">
+          <div class="source-dropzone" id="sourceDropzone" tabindex="0" role="button" aria-label="选择项目上下文文件">
+            <strong>拖入项目文件，或从本机选择</strong>
+            <span>单文件不超过 3 MB，目录会保留相对路径</span>
+            <div class="source-picker-actions">
+              <label class="button secondary" for="sourceFiles">选择文件</label>
+              <label class="button secondary" for="sourceFolder">选择文件夹</label>
+            </div>
+            <input id="sourceFiles" class="visually-hidden" type="file" multiple>
+            <input id="sourceFolder" class="visually-hidden" type="file" webkitdirectory directory multiple>
+          </div>
+          <div class="source-import-queue">
+            <div id="sourceQueue" class="source-queue"><div class="source-queue-empty">等待选择项目文件</div></div>
+            <div class="source-import-actions">
+              <button class="button secondary" id="clearSourcesButton" type="button" disabled>清空</button>
+              <button class="button primary" id="uploadSourcesButton" type="button" disabled>导入并建立索引</button>
+            </div>
+            <div class="upload-progress hidden" id="uploadProgress"><span id="uploadProgressText">准备导入</span><div><i id="uploadProgressBar"></i></div></div>
+          </div>
+        </div>
+      </section>
+      <div class="resource-columns">
+        <section class="resource-section">
+          <div class="section-heading"><div><h2>检索配置</h2><p>当前个人知识助手实际使用的运行参数。</p></div><span class="state-badge" id="ragState">检查中</span></div>
+          <dl class="config-list" id="ragConfig"></dl>
+        </section>
+        <aside class="resource-section operation-panel">
+          <div class="section-heading"><div><h2>索引维护</h2><p>模型或数据库变更后可从现有分块重建向量。</p></div></div>
+          <div class="index-balance"><span id="indexBalance">读取中</span><div><i id="indexProgress"></i></div></div>
+          <button class="button primary" id="reindexButton" type="button">重建向量索引</button>
+          <p class="operation-note">重建期间关键词检索保持可用。操作不会删除原始文档分块。</p>
+        </aside>
+      </div>
+      <section class="resource-section source-list-section">
+        <div class="section-heading"><div><h2>知识来源</h2><p>最近更新的项目文件及其分块状态。</p></div><span class="state-badge source-count" id="sourceCount">0 个来源</span></div>
+        <div class="source-list" id="sourceList"><div class="empty-state compact">正在读取知识来源</div></div>
+      </section>
+    </section>
+
+    <section id="skillsPanel" class="resource-panel hidden" role="tabpanel" aria-labelledby="skillsTab">
+      <div class="skill-toolbar">
+        <div><h2>可复用 Skills</h2><p><span id="skillCount">0</span> 项能力，绑定后会注入 Agent 的执行提示词。</p></div>
+        <div class="toolbar-actions"><input id="skillSearch" type="search" placeholder="搜索名称或类别"><button class="button primary" id="createSkillButton" type="button">新建 Skill</button></div>
+      </div>
+      <div class="skill-layout">
+        <section class="skill-list" id="skillList" aria-live="polite"></section>
+        <aside class="skill-detail" id="skillDetail">
+          <div class="empty-state">选择一个 Skill 查看指令和 Agent 绑定。</div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="skillDialog" class="skill-dialog">
+    <form id="skillForm" method="dialog">
+      <div class="dialog-heading"><div><span>REUSABLE CAPABILITY</span><h2 id="dialogTitle">新建 Skill</h2></div><button class="icon-button" id="closeDialogButton" type="button" title="关闭" aria-label="关闭">×</button></div>
+      <input id="skillId" type="hidden">
+      <label><span>名称</span><input id="skillName" maxlength="128" required placeholder="例如：技术文章事实核查"></label>
+      <div class="form-row">
+        <label><span>类别</span><select id="skillCategory"><option value="GENERAL">通用</option><option value="WRITING">写作</option><option value="REVIEW">审查</option><option value="RESEARCH">调研</option><option value="OPERATIONS">运维</option><option value="KNOWLEDGE">知识</option></select></label>
+        <label class="toggle-label"><span>状态</span><span class="toggle-control"><input id="skillStatus" type="checkbox" checked><b></b><em>启用</em></span></label>
+      </div>
+      <label><span>描述</span><input id="skillDescription" maxlength="512" placeholder="说明该能力解决什么问题"></label>
+      <label><span>执行指令</span><textarea id="skillInstructions" maxlength="12000" rows="9" required placeholder="写清适用范围、执行规则、输出要求和禁止事项。"></textarea></label>
+      <div class="dialog-actions"><button class="button secondary" id="cancelDialogButton" type="button">取消</button><button class="button primary" type="submit">保存 Skill</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script defer src="/ai-agent-station/static/js/rag-skills.20260818.js?v=20260818b"></script>
+</body>
+</html>

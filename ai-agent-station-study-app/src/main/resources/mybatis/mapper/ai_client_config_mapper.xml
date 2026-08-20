@@ -53,6 +53,11 @@
         DELETE FROM ai_client_config WHERE source_id = #{sourceId}
     </delete>
 
+    <delete id="deleteByConfigId" parameterType="java.lang.String">
+        DELETE FROM ai_client_config
+        WHERE ext_param LIKE CONCAT('%&quot;configId&quot;:&quot;', #{configId}, '&quot;%')
+    </delete>
+
     <select id="queryById" parameterType="java.lang.Long" resultMap="AiClientConfigMap">
         SELECT id, source_type, source_id, target_type, target_id, ext_param, status, create_time, update_time
         FROM ai_client_config

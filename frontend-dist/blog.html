@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>内容自动化 - Personal AI Workspace</title>
+  <link rel="icon" href="/ai-agent-station/favicon.ico">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/blog-workspace.20260817.css?v=20260818b">
+  <link rel="stylesheet" href="/ai-agent-station/static/css/workspace-standalone.20260818.css?v=20260818b">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="workspace-global-header">
+      <a class="workspace-global-brand" href="/ai-agent-station/dashboard" aria-label="返回运行中心">
+        <span class="workspace-global-mark" aria-hidden="true">AI</span>
+        <span><strong>Personal AI Workspace</strong><small>Agent 自动化与知识工作平台</small></span>
+      </a>
+      <nav class="workspace-global-nav" aria-label="核心工作区">
+        <a href="/ai-agent-station/dashboard">概览</a>
+        <a class="active" href="/ai-agent-station/workflows.html" aria-current="page">工作流运行</a>
+      </nav>
+      <div class="workspace-global-tools">
+        <label class="workspace-field"><span>工作空间</span><input id="workspaceId" maxlength="64" value="85374287" autocomplete="off"></label>
+        <a class="workspace-icon-link" href="/ai-agent-station/agent-list" title="系统装配" aria-label="系统装配">⚙</a>
+      </div>
+    </header>
+
+    <section class="content-commandbar" aria-label="内容命令栏">
+      <div><span>工作流运行 / CONTENT</span><strong>内容工作台</strong><small>内容工作流的草稿管理、定时任务与发布设置</small></div>
+      <div class="content-command-actions">
+        <button class="button secondary" id="automationButton" type="button">每日任务</button>
+        <button class="button secondary" id="generateButton" type="button">AI 工作流生成</button>
+        <button class="button primary" id="newButton" type="button">新建内容</button>
+      </div>
+    </section>
+
+    <div class="workspace-layout">
+      <aside class="draft-sidebar">
+        <div class="sidebar-header">
+          <div><h1>内容库</h1><span id="postCount">0 篇</span></div>
+          <button class="icon-button" id="refreshButton" type="button" title="刷新内容" aria-label="刷新内容">↻</button>
+        </div>
+        <div class="filter-tabs" role="tablist" aria-label="内容状态">
+          <button class="filter-tab active" data-status="ALL" type="button">全部</button>
+          <button class="filter-tab" data-status="DRAFT" type="button">草稿</button>
+          <button class="filter-tab" data-status="PUBLISHED" type="button">已发布</button>
+        </div>
+        <label class="search-field"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索标题或标签"></label>
+        <div class="draft-list" id="draftList"></div>
+      </aside>
+
+      <main class="editor-area">
+        <section class="empty-state" id="emptyState">
+          <div class="empty-mark" aria-hidden="true">文</div>
+          <h2>选择一篇内容</h2>
+          <p>从内容库打开草稿，或创建新的博文。</p>
+          <button class="button primary" id="emptyNewButton" type="button">新建内容</button>
+        </section>
+
+        <section class="editor-shell hidden" id="editorShell">
+          <div class="editor-toolbar">
+            <div class="document-status"><span class="status-badge" id="statusBadge">草稿</span><span id="saveState">已保存</span></div>
+            <div class="toolbar-actions">
+              <div class="segmented-control" aria-label="编辑模式"><button class="active" data-mode="edit" type="button">编辑</button><button data-mode="preview" type="button">预览</button></div>
+              <button class="button ghost danger" id="deleteButton" type="button">删除</button>
+              <button class="button secondary" id="exportButton" type="button">导出 .md</button>
+              <button class="button secondary" id="saveButton" type="button">保存</button>
+              <select class="publish-mode-select" id="publishMode" aria-label="发布方式"><option value="DRAFT">CSDN 草稿</option><option value="PUBLIC">公开发布</option></select>
+              <button class="button primary" id="publishButton" type="button">保存到 CSDN 草稿</button>
+            </div>
+          </div>
+
+          <div class="editor-content">
+            <input class="title-input" id="titleInput" maxlength="200" placeholder="内容标题">
+            <input class="summary-input" id="summaryInput" maxlength="500" placeholder="摘要">
+            <div class="metadata-row">
+              <label><span>标签</span><input id="tagsInput" placeholder="Java, Agent, RAG"></label>
+              <div class="artifact-info hidden" id="artifactInfo"></div>
+            </div>
+            <div class="workflow-info hidden" id="workflowInfo"></div>
+            <textarea id="contentInput" maxlength="100000" spellcheck="false" placeholder="使用 Markdown 撰写正文"></textarea>
+            <article class="markdown-preview hidden" id="markdownPreview"></article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="generateModal" role="dialog" aria-modal="true" aria-labelledby="generateTitle">
+    <form class="modal" id="generateForm">
+      <div class="modal-header"><div><h2 id="generateTitle">Agent 内容工作流</h2><p>自动取材、撰写、检查、返工并发布。</p></div><button class="icon-button" id="closeGenerateButton" type="button" aria-label="关闭">×</button></div>
+      <div class="form-grid">
+        <label class="full-width"><span>主题</span><input name="topic" maxlength="200" required placeholder="例如：如何实现混合检索"></label>
+        <label><span>目标读者</span><input name="audience" maxlength="120" value="软件开发者"></label>
+        <label><span>写作风格</span><select name="tone"><option value="实用、技术导向">实用、技术导向</option><option value="深入、严谨">深入、严谨</option><option value="简洁、易懂">简洁、易懂</option></select></label>
+        <label><span>目标长度</span><input name="targetLength" type="number" min="400" max="4000" step="100" value="1200"></label>
+        <label><span>标签</span><input name="tags" maxlength="240" placeholder="Java, RAG"></label>
+        <label class="full-width"><span>材料检索词</span><input name="sourceQuery" maxlength="500" placeholder="默认使用主题检索"></label>
+        <label><span>发布方式</span><select name="publishMode"><option value="DRAFT">检查通过后保存到 CSDN 草稿</option><option value="PUBLIC">检查通过后自动公开发布</option></select></label>
+        <label><span>自动返工上限</span><select name="maxRevisions"><option value="1">1 轮</option><option value="2" selected>2 轮</option><option value="3">3 轮</option></select></label>
+      </div>
+      <div class="modal-actions"><button class="button secondary" id="cancelGenerateButton" type="button">取消</button><button class="button primary" id="submitGenerateButton" type="submit">启动自动工作流</button></div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="automationModal" role="dialog" aria-modal="true" aria-labelledby="automationTitle">
+    <form class="modal automation-modal" id="automationForm">
+      <div class="modal-header"><div><h2 id="automationTitle">AI 行业日报</h2><p id="automationAgentInfo">Agent 配置加载中</p></div><button class="icon-button" id="closeAutomationButton" type="button" aria-label="关闭">×</button></div>
+      <div class="automation-status-row"><label class="toggle-field"><input name="enabled" type="checkbox"><span>启用每日任务</span></label><span class="automation-badge" id="automationStatus">未启用</span></div>
+      <div class="form-grid">
+        <label><span>执行时间（北京时间）</span><input name="time" type="time" value="09:00" required></label>
+        <label><span>发布方式</span><select name="publishMode"><option value="PUBLIC">检查通过后公开发布</option><option value="DRAFT">检查通过后保存草稿</option></select></label>
+        <label><span>热点事件数</span><input name="eventCount" type="number" min="1" max="10" value="5" required></label>
+        <label><span>新闻回溯时间</span><select name="lookbackHours"><option value="48">48 小时</option><option value="72" selected>72 小时</option><option value="120">5 天</option><option value="168">7 天</option></select></label>
+        <label><span>失败重试次数</span><input name="maxRetries" type="number" min="0" max="10" value="3" required></label>
+        <label><span>重试间隔</span><select name="retryDelayMinutes"><option value="10">10 分钟</option><option value="30" selected>30 分钟</option><option value="60">60 分钟</option></select></label>
+        <label class="full-width"><span>目标篇幅</span><input name="targetLength" type="number" min="800" max="4000" step="100" value="1800" required></label>
+      </div>
+      <section class="automation-runs" aria-labelledby="automationRunsTitle"><div class="automation-runs-header"><h3 id="automationRunsTitle">最近运行</h3><button class="button secondary" id="localProbeButton" type="button">立即试运行</button></div><div id="automationRunList" class="automation-run-list"></div></section>
+      <div class="modal-actions"><button class="button secondary" id="cancelAutomationButton" type="button">取消</button><button class="button primary" id="saveAutomationButton" type="submit">保存定时任务</button></div>
+    </form>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script defer src="/ai-agent-station/static/js/blog-workspace.20260817d.js?v=20260818b"></script>
+</body>
+</html>

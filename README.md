@@ -1,9 +1,23 @@
 # personal_workspace
 
-Personal AI Workspace is a self-hosted AI development workbench built on top
-of AI Agent Station Study. It combines project document retrieval, cited AI
-answers, lightweight conversation memory, diff risk checks, and configurable
-agent execution in one interface.
+Personal AI Workspace is a self-hosted Agent automation and knowledge work
+platform built on top of AI Agent Station Study. It brings evidence-backed
+knowledge retrieval, configurable professional workflows, content automation,
+and runtime resource assembly into one interface.
+
+## Product structure
+
+The frontend has two explicit layers so end-user work and system configuration
+do not compete for attention:
+
+- Runtime workspace: one workflow catalog generated from enabled Agent graphs.
+  Knowledge assistance and content automation are interaction modes inside the
+  workflow runtime rather than separate top-level products.
+- System assembly: Agent graphs, execution clients, and models and APIs.
+
+The overview is a runtime dashboard rather than a static demo. It reads live
+resource counts, workflow definitions, recent executions, knowledge-index
+status, and the daily content schedule from backend APIs.
 
 ## Current capabilities
 
@@ -14,14 +28,19 @@ agent execution in one interface.
 - Send retrieved evidence to an agent and stream its answer over SSE.
 - Keep 12 recent messages, a compact history summary, and explicit facts in
   Redis with a 30-day TTL.
-- Detect five high-risk diff patterns, including possible credentials,
-  dangerous process execution, disabled tests, unsafe SQL writes, and empty
-  catch blocks.
-- Configure agents, models, prompts, advisors, RAG resources, and MCP tools.
-
-The repository intentionally does not claim automated blog, social-media, or
-novel publishing. Those workflows and their external connectors are planned,
-not complete.
+- Run three professional Agent workflows: knowledge organization, topic
+  research, and operations diagnosis.
+- Discover enabled Agent graphs automatically in the workflow runtime. The
+  frontend joins graph metadata with backend-provided professional form
+  definitions, uses graph channels for knowledge and content interactions, and
+  gives every other graph a generic streaming Agent interface.
+- Generate evidence-backed technical posts through a writer and independent
+  inspector graph, automatically revise rejected drafts, and publish to CSDN.
+- Collect five recent AI-industry events on a daily schedule while preserving
+  each source URL and publication time; failed model or publishing calls enter
+  a bounded retry queue.
+- Configure the Agent graphs, role-specific execution clients, and model/API
+  binding used by the active workflows.
 
 ## Custom work in this repository
 
@@ -30,7 +49,9 @@ model, and tree-routing foundation. This repository's substantial additions
 are intentionally separated and easy to review:
 
 - `trigger/http/workspace`: AST and Markdown chunking, BM25 plus vector RRF,
-  evidence-backed search, Redis memory, and diff risk checks.
+  evidence-backed search, Redis memory, Git repository diff acquisition,
+  professional workflow execution, AI-news collection, inspected content
+  generation, retry scheduling, CSDN publishing, and GitHub webhook handling.
 - `migration/migrate_mysql_to_postgresql.py`: verified schema and data
   migration from MySQL to PostgreSQL.
 - `application-local.yml`: environment-based PostgreSQL, Redis, model, and
@@ -57,6 +78,26 @@ server. `frontend-dist/` therefore contains only the static build that is in
 use. Rebuilding the frontend from source requires recovering or recreating
 that source project.
 
+## Knowledge retrieval architecture
+
+The personal knowledge assistant uses one retrieval path. Uploaded Java,
+Markdown, and text files are stored in `workspace_chunk`, indexed in pgvector,
+and queried with BM25 plus vector retrieval and RRF fusion. Retrieved chunks
+and Redis-backed conversation memory are assembled as explicit evidence before
+the request enters the `Personal Knowledge Assistant` Agent graph.
+
+The upstream `ai_client_rag_order` and `RagAnswer` Advisor mechanism is not
+part of this path. It only represented legacy upload batches and vector-only
+label filtering, so its unused runtime records and navigation entries were
+removed instead of exposing two competing RAG configuration models.
+
+After changing the embedding provider or restoring the database, rebuild the
+semantic index from the stored chunks without uploading the source files again:
+
+```bash
+curl -X POST http://127.0.0.1:8099/api/v1/workspace/personal-workspace/knowledge/reindex
+```
+
 ## Requirements
 
 - Java 17
@@ -77,7 +118,55 @@ WORKSPACE_POSTGRES_USERNAME
 WORKSPACE_POSTGRES_PASSWORD
 WORKSPACE_POSTGRES_URL
 WORKSPACE_OPENAI_API_KEY
+WORKSPACE_EMBEDDING_API_KEY
 ```
+
+Optional blog and model settings:
+
+```text
+WORKSPACE_OPENAI_CHAT_MODEL
+WORKSPACE_EMBEDDING_BASE_URL
+WORKSPACE_EMBEDDING_MODEL
+WORKSPACE_EMBEDDING_DIMENSIONS
+WORKSPACE_BLOG_STORAGE_DIR
+WORKSPACE_CSDN_CREDENTIALS_FILE
+WORKSPACE_BLOG_API_ID
+WORKSPACE_BLOG_MODEL_BEAN
+WORKSPACE_BLOG_WORKFLOW_AGENT_ID
+WORKSPACE_BLOG_INSPECTION_MIN_SCORE
+```
+
+## Blog workflow
+
+Register the editable writer/inspector Agent graph in PostgreSQL:
+
+```bash
+psql "$DATABASE_URL" -f migration/register_blog_agent_workflow.sql
+```
+
+Set `WORKSPACE_BLOG_WORKFLOW_AGENT_ID` to the registered Agent ID. The deployed
+graph appears under `Agent list`, its writer and inspector appear under
+`Client management`, and clicking `Load` reassembles their current model
+bindings. The blog runtime reads the client roles, sequence, and step prompts
+from this graph.
+
+Generate a draft from workspace evidence:
+
+```bash
+curl -X POST http://127.0.0.1:8099/api/v1/workspace/demo/blogs/generate \
+  -H "Content-Type: application/json" \
+  -d '{"topic":"How hybrid retrieval works","sourceQuery":"BM25 vector RRF","targetLength":1200,"tags":["RAG","Java"]}'
+```
+
+The content API also supports listing and reading drafts, manual draft
+creation, editing, draft deletion, automation configuration, run history, and
+publishing through
+`POST /api/v1/workspace/{workspaceId}/blogs/{blogId}/publish`. Use a request body
+of `{"target":"CSDN","mode":"DRAFT"}` to save the article to the configured
+CSDN draft box, or use `mode: "PUBLIC"` for immediate public publication.
+Every successful publication also writes a Markdown archive under
+`{WORKSPACE_BLOG_STORAGE_DIR}/{workspaceId}/published/`. Published versions are
+immutable so that external content and its stored metadata cannot silently diverge.
 
 Do not commit production credentials or database exports.
 
@@ -111,11 +200,14 @@ restricted CORS are implemented.
 
 ## Known limitations
 
-- No reproducible retrieval benchmark is included yet.
+- Retrieval benchmark labels are synthetically generated and require periodic human audits.
 - Long-term facts are stored in Redis and are not vectorized.
-- Diff review is rule-based and is not yet wired to a Git pre-commit hook.
-- MCP configurations require separately deployed connector services.
-- Content publishing workflows are not implemented end to end.
+- GitHub review currently supports public repositories; private repository
+  cloning needs a short-lived GitHub App installation token.
+- CSDN publishing depends on a user session credential and can require
+  maintenance when the platform changes its editor or anti-automation checks.
+- External operational data still needs a maintained connector before the
+  operations workflow can collect telemetry automatically.
 - Runtime database contents and production configuration are excluded.
 
 ## Upstream and license

@@ -36,11 +36,27 @@ spring:
     openai:
       base-url: ${WORKSPACE_OPENAI_BASE_URL:https://api.openai.com}
       api-key: ${WORKSPACE_OPENAI_API_KEY}
+      chat:
+        options:
+          model: ${WORKSPACE_OPENAI_CHAT_MODEL:gpt-4o-mini}
     agent:
       auto-config:
         enabled: true
 
 workspace:
+  workflow:
+    ops-agent-id: ${WORKSPACE_OPS_AGENT_ID:71908740}
+  knowledge:
+    embedding:
+      base-url: ${WORKSPACE_EMBEDDING_BASE_URL:${WORKSPACE_OPENAI_BASE_URL:https://api.openai.com}}
+      api-key: ${WORKSPACE_EMBEDDING_API_KEY:${WORKSPACE_OPENAI_API_KEY}}
+      model: ${WORKSPACE_EMBEDDING_MODEL:text-embedding-3-small}
+      dimensions: ${WORKSPACE_EMBEDDING_DIMENSIONS:1536}
+  blog:
+    storage-dir: ${WORKSPACE_BLOG_STORAGE_DIR:./data/blog}
+    csdn:
+      credentials-file: ${WORKSPACE_CSDN_CREDENTIALS_FILE:}
+      api-url: ${WORKSPACE_CSDN_API_URL:https://bizapi.csdn.net/blog-console-api/v3/mdeditor/saveArticle}
   task:
     job:
       enabled: true
