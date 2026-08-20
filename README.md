@@ -5,6 +5,16 @@ platform built on top of AI Agent Station Study. It brings evidence-backed
 knowledge retrieval, configurable professional workflows, content automation,
 and runtime resource assembly into one interface.
 
+## Demo
+
+<p align="center">
+  <a href="./docs/demo/personal-workspace-demo.mp4">
+    <img src="./docs/demo/personal-workspace-demo-poster.png" width="800" alt="Personal AI Workspace workflow and Agent assembly demo">
+  </a>
+</p>
+
+<p align="center"><sub>52-second live demo: workflow runtime, cited knowledge Q&amp;A, research and operations workflows, content automation, and model assembly. Click the preview to play the HD video.</sub></p>
+
 ## Product structure
 
 The frontend has two explicit layers so end-user work and system configuration

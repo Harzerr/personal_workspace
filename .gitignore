@@ -64,6 +64,10 @@ playwright-storage.json
 /frontend-dist/static/js/blog-workspace.20260817c.js
 /frontend-dist/static/js/index.workspace-polish.*.js
 /frontend-dist/static/js/professional-workflows.*.js
+/docs/demo/*.webm
+/docs/demo/*.webp
+/docs/demo/*.gif
+/docs/demo/*-sheet.png
 
 # Runtime output and local exports
 *.log
